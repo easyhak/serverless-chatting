@@ -1,4 +1,4 @@
-service: serverless-http-api-dynamodb
+service: slack-backend
 frameworkVersion: "3"
 
 provider:
@@ -63,6 +63,12 @@ functions:
     events:
       - httpApi:
           path: /user
+          method: post
+  addChannel:
+    handler: todos/add_channel.add_channel
+    events:
+      - httpApi:
+          path: /channel
           method: post
 resources:
   Resources:
