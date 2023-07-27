@@ -9,7 +9,7 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 
 
-def handler(event, context):
+def add_user(event, context):
     timestamp = str(time.time())
 
     table = dynamodb.Table("slack-user-pool")
@@ -17,7 +17,6 @@ def handler(event, context):
     print(event)
     item = {
         'username': event['userName'],  # partition key
-        # 'id': {"S": event.request.userAttributes.sub},
         'nickname': event['request']['userAttributes']['nickname'],
         'email': event['request']['userAttributes']['email'],
         'createdAt': timestamp,

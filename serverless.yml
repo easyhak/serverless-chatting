@@ -3,7 +3,9 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: python3.9
+  runtime: python3.10
+  stage: dev
+  region: ap-northeast-2
   environment:
     DYNAMODB_TABLE: ${self:service}-${sls:stage}
   httpApi:
@@ -56,7 +58,12 @@ functions:
       - httpApi:
           path: /todos/{id}
           method: delete
-
+  addUser:
+    handler: todos/add_user.add_user
+    events:
+      - httpApi:
+          path: /user
+          method: post
 resources:
   Resources:
     TodosDynamoDbTable:
