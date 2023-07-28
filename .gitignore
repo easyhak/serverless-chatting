@@ -443,4 +443,6 @@ pyrightconfig.json
 .history
 .ionide
 
+python
+pyjwt
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,visualstudiocode,python,node
