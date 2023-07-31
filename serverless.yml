@@ -26,8 +26,8 @@ provider:
             - "arn:aws:dynamodb:${aws:region}:*:table/*"
             # 전체 테이블
 plugins:
+  - serverless-dynamodb
   - serverless-offline
-  - serverless-dynamodb-local
 custom:
   dynamodb:
     stages:
@@ -91,6 +91,12 @@ functions:
     events:
       - httpApi:
           path: /user
+          method: post
+  addWorkspace:
+    handler: api/workspace/add_workspace.add_workspace
+    events:
+      - httpApi:
+          path: /workspace
           method: post
   addChannel:
     handler: api/add_channel.add_channel
