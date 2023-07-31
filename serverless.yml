@@ -118,10 +118,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: name
+          - AttributeName: channel_name
             AttributeType: S
         KeySchema:
-          - AttributeName: name
+          - AttributeName: channel_name
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: channel-table-${sls:stage}
@@ -131,10 +131,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: name
+          - AttributeName: workspace_name
             AttributeType: S
         KeySchema:
-          - AttributeName: name
+          - AttributeName: workspace_name
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: workspace-table-${sls:stage}
@@ -143,10 +143,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: name
+          - AttributeName: channel_name
             AttributeType: S
         KeySchema:
-          - AttributeName: name
+          - AttributeName: channel_name
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: channel-chatting-table-${sls:stage}
