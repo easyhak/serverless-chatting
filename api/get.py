@@ -1,13 +1,11 @@
-import os
 import json
-
 from api import decimalencoder
-import boto3
-dynamodb = boto3.resource('dynamodb')
+from api.dynamodb import get_dynamodb
 
+dynamodb = get_dynamodb()
 
 def get(event, context):
-    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
+    table = dynamodb.Table('todo-table-dev')
 
     # fetch todo from the database
     result = table.get_item(

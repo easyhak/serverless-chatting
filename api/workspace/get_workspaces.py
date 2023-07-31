@@ -4,8 +4,9 @@ import json
 from boto3.dynamodb.conditions import Attr
 
 from api import decimalencoder
-import boto3
-dynamodb = boto3.resource('dynamodb')
+from api.dynamodb import get_dynamodb
+
+dynamodb = get_dynamodb()
 
 
 def get_workspaces(event, context):

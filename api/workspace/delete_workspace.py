@@ -1,11 +1,6 @@
-import json
-import logging
-import os
-import time
-import uuid
+from api.dynamodb import get_dynamodb
 
-import boto3
-dynamodb = boto3.resource('dynamodb')
+dynamodb = get_dynamodb()
 
 
 def delete_workspace(event, context):

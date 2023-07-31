@@ -1,11 +1,10 @@
-import os
 import json
 
 from api import decimalencoder
-import boto3
-dynamodb = boto3.resource('dynamodb')
 
+from api.dynamodb import get_dynamodb
 
+dynamodb = get_dynamodb()
 def get_channel(event, context):
     channel_table = dynamodb.Table("channel-table-dev")
 

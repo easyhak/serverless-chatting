@@ -1,12 +1,9 @@
 import json
-import logging
-import os
 import time
-import uuid
 
-import boto3
+from api.dynamodb import get_dynamodb
 
-dynamodb = boto3.resource('dynamodb')
+dynamodb = get_dynamodb()
 
 
 def add_workspace(event, context):
@@ -30,7 +27,7 @@ def add_workspace(event, context):
         'workspace_name': data['workspace_name'],  # partition key
         # workspace 안에 channels를 추가하기
 
-        'admin': "admin", # 만든 사람으로 하기
+        'admin': "admin",  # 만든 사람으로 하기
         'createdAt': timestamp,
         'updatedAt': timestamp,
     }

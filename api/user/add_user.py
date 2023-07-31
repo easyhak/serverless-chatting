@@ -1,12 +1,8 @@
-import json
-import logging
-import os
 import time
-import uuid
 
-import boto3
+from api.dynamodb import get_dynamodb
 
-dynamodb = boto3.resource('dynamodb')
+dynamodb = get_dynamodb()
 
 
 def add_user(event, context):

@@ -3,11 +3,13 @@ import os
 
 from api import decimalencoder
 import boto3
-dynamodb = boto3.resource('dynamodb')
 
+from api.dynamodb import get_dynamodb
+
+dynamodb = get_dynamodb()
 
 def list(event, context):
-    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
+    table = dynamodb.Table('todo-table-dev')
 
     # fetch all todos from the database
     result = table.scan()

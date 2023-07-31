@@ -1,11 +1,11 @@
 import json
 import logging
-import os
 import time
 import uuid
 
-import boto3
-dynamodb = boto3.resource('dynamodb')
+from api.dynamodb import get_dynamodb
+
+dynamodb = get_dynamodb()
 
 
 def create(event, context):
@@ -13,7 +13,7 @@ def create(event, context):
     if 'text' not in data:
         logging.error("Validation Failed")
         raise Exception("Couldn't create the todo item.")
-    
+
     timestamp = str(time.time())
 
     table = dynamodb.Table('todo-table-dev')

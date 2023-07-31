@@ -1,8 +1,10 @@
 import os
 
 import boto3
-dynamodb = boto3.resource('dynamodb')
 
+from api.dynamodb import get_dynamodb
+
+dynamodb = get_dynamodb()
 
 def delete(event, context):
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
