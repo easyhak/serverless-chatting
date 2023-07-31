@@ -5,6 +5,7 @@ provider:
   name: aws
   runtime: python3.9
   stage: dev
+  timeout: 10
   region: ap-northeast-2
   environment:
     DYNAMODB_TABLE: ${self:service}-${sls:stage}
@@ -35,7 +36,7 @@ custom:
     start:
       port: 8000
       inMemory: true
-      migration: true
+      migrate: true
       seed: true
 layers:
   pyjwt:
@@ -121,7 +122,7 @@ resources:
             AttributeName: id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        TableName: todo-table-${sls:stage}
 
     UserDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
