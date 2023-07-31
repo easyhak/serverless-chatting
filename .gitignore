@@ -445,4 +445,6 @@ pyrightconfig.json
 
 pyjwt/python
 pyjwt
+.dynamodb
 # End of https://www.toptal.com/developers/gitignore/api/pycharm,visualstudiocode,python,node
+
