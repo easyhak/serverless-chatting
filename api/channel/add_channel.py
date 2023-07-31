@@ -14,7 +14,7 @@ def add_channel(event, context):
 
     # table
     user_table = dynamodb.Table("slack-user-pool")
-    channel_table = dynamodb.Table("channel_table")
+    channel_table = dynamodb.Table("channel-table-dev")
 
     # channel-table
     # channel_name, users(null now.. 추후에 초대하면 추가), admin(username)
