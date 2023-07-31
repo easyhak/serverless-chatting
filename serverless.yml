@@ -36,47 +36,47 @@ layers:
     retain: true # layer versions are not deleted as new ones are created
 functions:
   create:
-    handler: todos/create.create
+    handler: api/create.create
     events:
       - httpApi:
-          path: /todos
+          path: /api
           method: post
 
   list:
-    handler: todos/list.list
+    handler: api/list.list
     events:
       - httpApi:
-          path: /todos
+          path: /api
           method: get
 
   get:
-    handler: todos/get.get
+    handler: api/get.get
     events:
       - httpApi:
-          path: /todos/{id}
+          path: /api/{id}
           method: get
 
   update:
-    handler: todos/update.update
+    handler: api/update.update
     events:
       - httpApi:
-          path: /todos/{id}
+          path: /api/{id}
           method: put
 
   delete:
-    handler: todos/delete.delete
+    handler: api/delete.delete
     events:
       - httpApi:
-          path: /todos/{id}
+          path: /api/{id}
           method: delete
   addUser:
-    handler: todos/add_user.add_user
+    handler: api/add_user.add_user
     events:
       - httpApi:
           path: /user
           method: post
   addChannel:
-    handler: todos/add_channel.add_channel
+    handler: api/add_channel.add_channel
     events:
       - httpApi:
           path: /channel
