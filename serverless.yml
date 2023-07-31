@@ -3,7 +3,7 @@ frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: python3.10
+  runtime: python3.9
   stage: dev
   region: ap-northeast-2
   environment:
@@ -25,7 +25,18 @@ provider:
             - "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
             - "arn:aws:dynamodb:${aws:region}:*:table/*"
             # 전체 테이블
-
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migration: true
+      seed: true
 layers:
   pyjwt:
     path: pyjwt
@@ -35,6 +46,12 @@ layers:
       - python3.9
     retain: true # layer versions are not deleted as new ones are created
 functions:
+  hello:
+    handler: api/hello.hello
+    events:
+      - httpApi:
+          path: /hello
+          method: get
   create:
     handler: api/create.create
     events:
