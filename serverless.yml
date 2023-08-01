@@ -142,7 +142,7 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: channel_name
+          - AttributeName: channel_id
             AttributeType: S
         KeySchema:
           - AttributeName: channel_name
@@ -155,7 +155,7 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: workspace_name
+          - AttributeName: workspace_id
             AttributeType: S
         KeySchema:
           - AttributeName: workspace_name
@@ -167,10 +167,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: channel_name
+          - AttributeName: chat_id
             AttributeType: S
         KeySchema:
-          - AttributeName: channel_name
+          - AttributeName: chat_id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: channel-chatting-table-${sls:stage}
@@ -180,10 +180,10 @@ resources:
       DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
-          - AttributeName: sender
+          - AttributeName: dm_id
             AttributeType: S
         KeySchema:
-          - AttributeName: sender
+          - AttributeName: dm_id
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: dm-table-${sls:stage}
