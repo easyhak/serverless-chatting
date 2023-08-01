@@ -93,22 +93,35 @@ functions:
       - httpApi:
           path: /user
           method: post
+  # workspace
   addWorkspace:
     handler: api/workspace/add_workspace.add_workspace
     events:
       - httpApi:
           path: /workspace
           method: post
+  deleteWorkspace:
+    handler: api/workspace/delete_workspace.delete_workspace
+    events:
+      - httpApi:
+          path: /workspace/{workspace_id}
+          method: delete
+
+  # channel
   addChannel:
     handler: api/add_channel.add_channel
     events:
       - httpApi:
           path: /channel
           method: post
+
+
 resources:
   Resources:
 
     # table definition
+
+    # todo table
     TodosDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -123,7 +136,7 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: todo-table-${sls:stage}
-
+    # user table
     UserDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -136,7 +149,7 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: user-table-${sls:stage}
-
+    # channel table
     ChannelDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -150,6 +163,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: channel-table-${sls:stage}
 
+    # workspace table
     WorkSpaceDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -162,6 +176,8 @@ resources:
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
         TableName: workspace-table-${sls:stage}
+
+    # channel table
     ChannelChattingDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -175,6 +191,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: channel-chatting-table-${sls:stage}
 
+    # dm table
     DMDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
