@@ -47,48 +47,51 @@ layers:
       - python3.9
     retain: true # layer versions are not deleted as new ones are created
 functions:
+
+  # todos example
   hello:
-    handler: api/hello.hello
+    handler: api/todos/hello.hello
     events:
       - httpApi:
           path: /hello
           method: get
   create:
-    handler: api/create.create
+    handler: api/todos/create.create
     events:
       - httpApi:
-          path: /api
+          path: /todos
           method: post
 
   list:
-    handler: api/list.list
+    handler: api/todos/list.list
     events:
       - httpApi:
-          path: /api
+          path: /todos
           method: get
 
   get:
-    handler: api/get.get
+    handler: api/todos/get.get
     events:
       - httpApi:
-          path: /api/{id}
+          path: /todos/{id}
           method: get
 
   update:
-    handler: api/update.update
+    handler: api/todos/update.update
     events:
       - httpApi:
-          path: /api/{id}
+          path: /todos/{id}
           method: put
 
   delete:
-    handler: api/delete.delete
+    handler: api/todos/delete.delete
     events:
       - httpApi:
-          path: /api/{id}
+          path: /todos/{id}
           method: delete
+  # user
   addUser:
-    handler: api/add_user.add_user
+    handler: api/user/add_user.add_user
     events:
       - httpApi:
           path: /user

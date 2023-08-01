@@ -3,7 +3,7 @@ import json
 from boto3.dynamodb.conditions import Attr
 
 from api import decimalencoder
-from api.dynamodb import get_dynamodb
+from api import get_dynamodb
 
 dynamodb = get_dynamodb()
 def get_channels(event, context):

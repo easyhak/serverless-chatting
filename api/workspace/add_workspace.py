@@ -2,7 +2,7 @@ import json
 import time
 import uuid
 
-from api.dynamodb import get_dynamodb
+from api import get_dynamodb
 
 dynamodb = get_dynamodb()
 
@@ -15,6 +15,7 @@ def add_workspace(event, context):
 
     data = json.loads(event['body'])
     # front에서 jwt -> 여기서 해독 -> email, username 등의 정보! -> email 사용
+    # 쓸수 있는지의 권한은 cognio를 통해서 얻는다
     # channel-table 현재 로그인 해 있는 user가 admin이 된다.
     # pyjwt를 이용해 현재 사용자 알아내기
 
