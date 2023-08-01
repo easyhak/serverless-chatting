@@ -7,10 +7,11 @@ def delete_workspace(event, context):
     # table
     workspace_table = dynamodb.Table("workspace-table-dev")
 
-    # delete the todo from the database
+    # delete the workspace from the database
+    # user admin 인증 필요
     workspace_table.delete_item(
         Key={
-            'workspace_name': event['pathParameters']['workspace_name']
+            'workspace_id': event['pathParameters']['workspace_id']
         }
     )
 
