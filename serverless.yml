@@ -36,8 +36,8 @@ custom:
     start:
       port: 8000
       inMemory: true
-      migrate: true
       seed: true
+      migrate: true
 layers:
   pyjwt:
     path: pyjwt
@@ -115,8 +115,13 @@ functions:
       - httpApi:
           path: /workspace/{workspace_name}
           method: get
-
-  # channel
+  getWorkspaces:
+    handler: api/workspace/get_workspaces.get_workspaces
+    events:
+      - httpApi:
+          path: /workspaces/{user_email}
+          method: get
+      # channel
   addChannel:
     handler: api/channel/add_channel.add_channel
     events:
