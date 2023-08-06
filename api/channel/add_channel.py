@@ -36,6 +36,7 @@ def add_channel(event, context):
         'createdAt': timestamp,
     }
 
+
     channel_table.put_item(Item=channel_item)
     print(channel_item)
 
