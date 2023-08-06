@@ -1,4 +1,5 @@
 import json
+import os
 import time
 import uuid
 
@@ -11,14 +12,23 @@ from api.dynamodb import get_dynamodb
 dynamodb = get_dynamodb()
 user_dynamodb = boto3.resource('dynamodb')  # cloud table만 가져옴
 
-def add_channel(event, context):
+"""
+response body
+{
+"workspace_id": "7ea53ab4-7786-4ea5-9e88-79aba53d16f4",
+"channel_name": "channel1",
+"user_email": "test@test.com"
+}
+"""
 
+
+def add_channel(event, context):
     # todo
     # user 부분 처리 안함
 
     # table
     user_table = user_dynamodb.Table("user-table")
-    channel_table = dynamodb.Table("main-table-dev")
+    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     data = json.loads(event['body'])
     print(data)
 
@@ -33,32 +43,30 @@ def add_channel(event, context):
     # pyjwt를 이용해 현재 사용자 알아내기
 
     # workspace_name이 존재하는지 확인
-    workspace_response = channel_table.scan(
-        FilterExpression=Attr('workspace_name').eq(data['workspace_name'])
+    workspace_response = table.get_item(
+        Key={
+            'PK': "workspace#" + data['workspace_id'],
+            'SK': "workspace#" + data['workspace_id']
+        }
     )
-
-    # workspace가 존재하지 않는다면
-    if not workspace_response['Items']:
+    print(workspace_response)
+    # workspace id가 존재하지 않는다면
+    try:
+        print(workspace_response['Item'])
+    except KeyError:
         response = {
             "statusCode": 200,
             "body": json.dumps({
-                "message": data['workspace_name'] + "not exist"
+                "message": data['workspace_id'] + " not exist"
             }, cls=decimalencoder.DecimalEncoder)
         }
         return response
-
-    """
-    {
-        'workspace_name': workspace_name
-        'channel_name': channel_name
-    }
-    """
-
+    workspace_info = workspace_response['Item']
     # 이미 table에 channel name이 중복되는지 확인
-    channel_response = channel_table.scan(
+    channel_response = table.scan(
         FilterExpression=Attr('channel_name').eq(data['channel_name'])
     )
-    # 중복 된다면 이거 {"message": "exist channel name"}
+    # 중복 된다면 {"message": "exist channel name"}
     if channel_response['Items']:
         response = {
             "statusCode": 200,
@@ -68,28 +76,29 @@ def add_channel(event, context):
         }
         return response
 
-
     timestamp = str(time.time())
     # table에 값 넣기
     channel_item = {
-        'PK': 'workspace#' + channel_id,  # PK
-        'SK': 'channel#' + channel_id,  # SK
+        'PK': 'workspace#' + data['workspace_id'],  # PK
+        'SK': 'channel#' + channel_id,  # SK, uuid4
         'channel_name': data['channel_name'],
-        'workspace': data['workspace_id'],
+        'workspace_id': data['workspace_id'],
+        'workspace_name': workspace_info['workspace_name'],
         'type': "channel",
         # users, messages 부분..?
-        'users': [],
+        'users': [data['user_email']],
         'messages': [],
         'createdAt': timestamp,
         'updatedAt': timestamp
     }
 
-    channel_table.put_item(Item=channel_item)
+    table.put_item(Item=channel_item)
 
     # response 값 만들기
     channel_info = {
         "message": "channel created successfully",
-        "workspace": data['workspace_name'],
+        "workspace_name": workspace_info['workspace_name'],
+        'workspace_id': data['workspace_id'],
         'channel_id': channel_id,
         'type': "channel",
         'users': [data['user_email']],
