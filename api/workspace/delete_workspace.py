@@ -13,12 +13,28 @@ def delete_workspace(event, context):
     print(workspace_name)
     # delete the workspace from the database
     # user admin 인증 필요
+    workspace_item = workspace_table.get_item(
+        Key={
+            'PK': workspace_name,
+            'SK': workspace_name
+        }
+    )
+    # workspace가 존재하지 않을 때 처리
+    try:
+        print(workspace_item['Item'])
+    except KeyError:
+        return {
+            "statusCode": 200,
+            "body": json.dumps({"message": event['pathParameters']['workspace_name'] + " not exist"},
+                               cls=decimalencoder.DecimalEncoder)
+        }
     workspace_table.delete_item(
         Key={
             'PK': workspace_name,
             'SK': workspace_name
         }
     )
+
     # channel에 대한 정보 가져옴
     channel_response = workspace_table.query(
         KeyConditionExpression='PK =:workspace_name and begins_with(SK, :SK)',
