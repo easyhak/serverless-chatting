@@ -41,7 +41,7 @@ def add_workspace(event, context):
         # workspace 안에 channels를 추가하기
         'workspace_name': data['workspace_name'],
         'channels': [],
-        'users': [],
+        'users': [data['user_email']],
         'type': "workspace",
         'admin': data['user_email'],  # 만든 사람 email로 하기,  추후 수정 id_token을 사용
         'createdAt': timestamp,
@@ -57,7 +57,7 @@ def add_workspace(event, context):
         'type': "workspace",
         'workspace_id': workspace_id,
         'channels': [],
-        'users': [],
+        'users': [data['user_email']],
         'admin': data['user_email'],
         'createdAt': timestamp,
         'updatedAt': timestamp
