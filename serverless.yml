@@ -8,7 +8,7 @@ provider:
   timeout: 10
   region: ap-northeast-2
   environment:
-    DYNAMODB_TABLE: ${self:service}-${sls:stage}
+    DYNAMODB_TABLE: main-table-${sls:stage}
   httpApi:
     cors: true
   iam:
@@ -107,13 +107,13 @@ functions:
     handler: api/workspace/delete_workspace.delete_workspace
     events:
       - httpApi:
-          path: /workspace/{workspace_name}
+          path: /workspace/{workspace_id}
           method: delete
   getWorkspace:
     handler: api/workspace/get_workspace.get_workspace
     events:
       - httpApi:
-          path: /workspace/{workspace_name}
+          path: /workspace/{workspace_id}
           method: get
   getWorkspaces:
     handler: api/workspace/get_workspaces.get_workspaces

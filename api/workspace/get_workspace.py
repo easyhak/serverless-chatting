@@ -10,12 +10,12 @@ dynamodb = get_dynamodb()
 def get_workspace(event, context):
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
 
-    workspace_name = 'workspace#' + event['pathParameters']['workspace_name']
-    print(workspace_name)
+    workspace_id = 'workspace#' + event['pathParameters']['workspace_id']
+    print(workspace_id)
     workspace_response = table.get_item(
         Key={
-            'PK': workspace_name,
-            'SK': workspace_name
+            'PK': workspace_id,
+            'SK': workspace_id
         }
     )
     # workspace_name 존재하지 않을 경우
@@ -25,7 +25,7 @@ def get_workspace(event, context):
         response = {
             "statusCode": 200,
             "body": json.dumps({
-                "message": "not exist workspace name"
+                "message": "not exist workspace id"
             }, cls=decimalencoder.DecimalEncoder)
         }
         return response
@@ -34,7 +34,7 @@ def get_workspace(event, context):
     channel_response = table.query(
         KeyConditionExpression='PK =:workspace_name and begins_with(SK, :SK)',
         ExpressionAttributeValues={
-            ':workspace_name': workspace_name,
+            ':workspace_name': workspace_id,
             ':SK': "channel#"
         }
     )
@@ -43,7 +43,7 @@ def get_workspace(event, context):
     print("channel_info: ", channel_response['Items'])
     workspace_info = workspace_response['Item']
     workspace_info['channels'] = channel_response['Items']
-    workspace_info['workspace_name'] = event['pathParameters']['workspace_name']
+    workspace_info['workspace_id'] = event['pathParameters']['workspace_id']
     # create a response
     response = {
         "statusCode": 200,
