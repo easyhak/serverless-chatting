@@ -1,14 +1,17 @@
 import json
+import os
 
 from api import decimalencoder
 from api.dynamodb import get_dynamodb
 
 dynamodb = get_dynamodb()
+
+
 def delete_channel(event, context):
     # table
-    channel_table = dynamodb.Table("main-table-dev")
+    channel_table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
 
-    workspace_id = "workspace#" + event['queryStringParameters']['workspace_id']
+    workspace_id = "workspace#" + event['pathParameters']['workspace_id']
     channel_id = "channel#" + event['pathParameters']['channel_id']
     print(channel_id)
 
@@ -22,7 +25,7 @@ def delete_channel(event, context):
 
     # channel이 존재하지 않을 때 처리
     try:
-        print(channel_item['item'])
+        print(channel_item['Item'])
     except KeyError:
         return {
             "statusCode": 200,

@@ -128,6 +128,12 @@ functions:
       - httpApi:
           path: /channel
           method: post
+  deleteChannel:
+    handler: api/channel/delete_channel.delete_channel
+    events:
+      - httpApi:
+          path: /channel/{workspace_id}/{channel_id}
+          method: delete
 
 resources:
   Resources:
