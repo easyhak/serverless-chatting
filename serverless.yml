@@ -121,7 +121,7 @@ functions:
       - httpApi:
           path: /workspaces/{user_email}
           method: get
-      # channel
+  # channel
   addChannel:
     handler: api/channel/add_channel.add_channel
     events:
@@ -134,7 +134,12 @@ functions:
       - httpApi:
           path: /channel/{workspace_id}/{channel_id}
           method: delete
-
+  getChannel:
+    handler: api/channel/get_channel.get_channel
+    events:
+      - httpApi:
+          path: /channel/{workspace_id}/{channel_id}
+          method: get
 resources:
   Resources:
 

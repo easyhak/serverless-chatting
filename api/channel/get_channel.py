@@ -4,14 +4,15 @@ from api import decimalencoder
 from api.dynamodb import get_dynamodb
 
 dynamodb = get_dynamodb()
+
+
 def get_channel(event, context):
     channel_table = dynamodb.Table("main-table-dev")
 
-    workspace_name = "workspace#" + event['queryStringParameters']['workspace_name']
-    channel_name = "channel#" + event['pathParameters']['channel_name']
+    workspace_name = "workspace#" + event['pathParameters']['workspace_id']
+    channel_name = "channel#" + event['pathParameters']['channel_id']
     print(channel_name)
 
-    # fetch todo from the database
     # table에서 해당 채널 값 가져오기
     channel_response = channel_table.get_item(
         Key={
@@ -28,13 +29,12 @@ def get_channel(event, context):
     except KeyError:
         return {
             "statusCode": 200,
-            # 이 부분 접근하는 방법이 이게 맞나?
-            "body": json.dumps({"message": event['pathParameters']['channel_name'] + " not exist"},
+            "body": json.dumps({"message": event['pathParameters']['channel_id'] + " not exist"},
                                cls=decimalencoder.DecimalEncoder)
         }
 
     channel_info = channel_response['Item']
-
+    channel_info['channel_id'] = event['pathParameters']['channel_id']
     # create a response
     response = {
         "statusCode": 200,
