@@ -1,6 +1,6 @@
 import time
 
-from api import get_dynamodb
+from api.dynamodb import get_dynamodb
 
 dynamodb = get_dynamodb()
 
