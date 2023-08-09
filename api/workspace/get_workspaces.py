@@ -31,8 +31,10 @@ def get_workspaces(event, context):
         result = user_result['Item']
         print(result['workspaces'])
         # response = result['Item']
-
-        return result['workspaces']
+        workspaces_list = []
+        for i in result['workspaces']:
+            workspaces_list.append(i["S"])
+        return workspaces_list
     # invalid user
     except:
         response = {
