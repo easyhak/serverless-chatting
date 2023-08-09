@@ -8,6 +8,7 @@ from boto3.dynamodb.conditions import Key, Attr
 
 from api import decimalencoder
 from api.dynamodb import get_dynamodb
+from api.user.check_user import check_user
 
 dynamodb = get_dynamodb()
 user_dynamodb = boto3.resource('dynamodb')  # cloud table만 가져옴
@@ -23,14 +24,12 @@ response body
 
 
 def add_channel(event, context):
-    # todo
     # user 부분 처리 안함
 
     # table
     user_table = user_dynamodb.Table("user-table")
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     data = json.loads(event['body'])
-    print(data)
 
     channel_id = str(uuid.uuid4())
 
@@ -92,6 +91,28 @@ def add_channel(event, context):
         'updatedAt': timestamp
     }
 
+    # user table에 channel 정보 넣기
+    if check_user("user#" + data['user_email']):
+
+        user_table.update_item(
+            Key={
+                'PK': "user#" + data['user_email'],
+                'SK': "user#" + data['user_email']
+            },
+            UpdateExpression="SET channels = list_append(channels, :i)",
+            ExpressionAttributeValues={
+                ':i': [data['workspace_id']+"#"+channel_id],
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+    else:
+        return {
+            "statusCode": 200,
+            "body": json.dumps({
+                "message": "invalid user"
+            },
+                cls=decimalencoder.DecimalEncoder)
+        }
     table.put_item(Item=channel_item)
 
     # response 값 만들기

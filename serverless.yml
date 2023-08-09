@@ -9,6 +9,7 @@ provider:
   region: ap-northeast-2
   environment:
     DYNAMODB_TABLE: main-table-${sls:stage}
+    USER_TABLE: user-table
   httpApi:
     cors: true
   iam:
@@ -38,6 +39,7 @@ custom:
       inMemory: true
       seed: true
       migrate: true
+      docker: true
 layers:
   pyjwt:
     path: pyjwt
@@ -140,6 +142,11 @@ functions:
       - httpApi:
           path: /channel/{workspace_id}/{channel_id}
           method: get
+  getChannels:
+    handler: api/channel/get_channels.get_channels
+    events:
+      - path: /channels/{workspace_id}/{user_email}
+      - method: get
 resources:
   Resources:
 

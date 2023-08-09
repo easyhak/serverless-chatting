@@ -58,7 +58,7 @@ def add_workspace(event, context):
         return {
             "statusCode": 200,
             "body": json.dumps({
-                "message": "not valid user"
+                "message": "invalid user"
             },
                 cls=decimalencoder.DecimalEncoder)
         }
