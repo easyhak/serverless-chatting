@@ -100,10 +100,10 @@ def add_channel(event, context):
             }
         )
 
-        # 왜 안돼????????? 😡 아직 미완성 -> 확인 부탁해ㅐ!
-        for ind, workspace_data in enumerate(user_info['Item']['workspaces']['L']):
+        # 왜 안돼????????? 😡 아직 미완성
+        for ind, x in enumerate(user_info['Item']['workspaces']):
 
-            if workspace_data["M"]["workspace_id"]["S"] == data['workspace_id']:
+            if list(x.keys())[0] == data['workspace_id']:
                 # print('workspaces[%d]: ' % ind, user_info['Item']['workspaces'][ind][data['workspace_id']])
                 print(data['workspace_id'])
                 print(list(x.keys())[0])
