@@ -106,12 +106,13 @@ def add_channel(event, context):
             if list(x.keys())[0] == data['workspace_id']:
                 # print('workspaces[%d]: ' % ind, user_info['Item']['workspaces'][ind][data['workspace_id']])
                 print(data['workspace_id'])
+                print(list(x.keys())[0])
                 user_table.update_item(
                     Key={
                         'PK': "user#" + data['user_email'],
                         'SK': "user#" + data['user_email']
                     },
-                    UpdateExpression=f"SET #src = list_append(#src, :i)",
+                    UpdateExpression=f"SET #src[{ind}].#workspace_id = list_append(#src[{ind}].#workspace_id, :i)",
 
                     ExpressionAttributeValues={
                         ':i': [channel_id]
@@ -119,7 +120,7 @@ def add_channel(event, context):
                     ExpressionAttributeNames={
                         '#src': 'workspaces',
                         # '#ind': str(ind),
-                        # '#workspace_id': data['workspace_id']
+                        '#workspace_id': data['workspace_id']
                     },
                     ReturnValues="UPDATED_NEW"
                 )
