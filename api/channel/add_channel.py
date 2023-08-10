@@ -27,7 +27,7 @@ def add_channel(event, context):
     # user 부분 처리 안함
 
     # table
-    user_table = user_dynamodb.Table("user-table")
+    user_table = user_dynamodb.Table(os.environ['USER_TABLE'])
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     data = json.loads(event['body'])
 
@@ -93,18 +93,36 @@ def add_channel(event, context):
 
     # user table에 channel 정보 넣기
     if check_user("user#" + data['user_email']):
-
-        user_table.update_item(
+        user_info = user_table.get_item(
             Key={
                 'PK': "user#" + data['user_email'],
                 'SK': "user#" + data['user_email']
-            },
-            UpdateExpression="SET channels = list_append(channels, :i)",
-            ExpressionAttributeValues={
-                ':i': [data['workspace_id']+"#"+channel_id],
-            },
-            ReturnValues="UPDATED_NEW"
+            }
         )
+
+        # 왜 안돼????????? 😡 아직 미완성
+        for ind, x in enumerate(user_info['Item']['workspaces']):
+
+            if list(x.keys())[0] == data['workspace_id']:
+                # print('workspaces[%d]: ' % ind, user_info['Item']['workspaces'][ind][data['workspace_id']])
+                print(data['workspace_id'])
+                user_table.update_item(
+                    Key={
+                        'PK': "user#" + data['user_email'],
+                        'SK': "user#" + data['user_email']
+                    },
+                    UpdateExpression=f"SET #src = list_append(#src, :i)",
+
+                    ExpressionAttributeValues={
+                        ':i': [channel_id]
+                    },
+                    ExpressionAttributeNames={
+                        '#src': 'workspaces',
+                        # '#ind': str(ind),
+                        # '#workspace_id': data['workspace_id']
+                    },
+                    ReturnValues="UPDATED_NEW"
+                )
     else:
         return {
             "statusCode": 200,
