@@ -15,20 +15,20 @@ user_dynamodb = boto3.resource('dynamodb')
 
 
 def add_workspace(event, context):
-    table = dynamodb.Table("main-table-dev")
+    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     user_table = user_dynamodb.Table(os.environ['USER_TABLE'])
     data = json.loads(event['body'])
     print(data)
     workspace_id = str(uuid.uuid4())
     # 이미 table에 workspace name이 중복되는지 확인
-
     workspace_response = table.scan(
         FilterExpression=Attr('workspace_name').eq(data['workspace_name'])
     )
+
     print(workspace_response['Items'])
     # 존재 한다면 예외 처리
 
-    # 중복 된다면 이거 {"message": "exist workspace name"}
+    # 중복 된다면 {"message": "exist workspace name"}
     if workspace_response['Items']:
         response = {
             "statusCode": 200,
@@ -40,9 +40,9 @@ def add_workspace(event, context):
 
     timestamp = str(time.time())
     # table 값 넣기
-
+    # useer table 값 넣기
+    workspace_init = {workspace_id: []}
     if check_user("user#" + data['user_email']):
-
         user_table.update_item(
             Key={
                 'PK': "user#" + data['user_email'],
@@ -50,7 +50,7 @@ def add_workspace(event, context):
             },
             UpdateExpression="SET workspaces = list_append(workspaces, :i)",
             ExpressionAttributeValues={
-                ':i': [workspace_id],
+                ':i': [workspace_init],
             },
             ReturnValues="UPDATED_NEW"
         )
@@ -62,13 +62,10 @@ def add_workspace(event, context):
             },
                 cls=decimalencoder.DecimalEncoder)
         }
-
+    # user 내의 workspaces 정보 delete 하기
     workspace_item = {
         'PK': "workspace#" + workspace_id,
         'SK': "workspace#" + workspace_id,
-        # 'PK': 'workspace#' + data['workspace_name'],  # partition key
-        # 'SK': 'workspace#' + data['workspace_name'],  # sort key
-        # workspace 안에 channels를 추가하기
         'workspace_name': data['workspace_name'],
         'channels': [],
         'users': [data['user_email']],
@@ -97,4 +94,12 @@ def add_workspace(event, context):
         "body": json.dumps(workspace_info,
                            cls=decimalencoder.DecimalEncoder)
     }
+
+    info = user_table.get_item(
+        Key={
+            'PK': "user#" + data['user_email'],
+            'SK': "user#" + data['user_email']
+        }
+    )
+    print(info['Item'])
     return response
