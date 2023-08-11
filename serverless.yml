@@ -145,8 +145,9 @@ functions:
   getChannels:
     handler: api/channel/get_channels.get_channels
     events:
-      - path: /channels/{workspace_id}/{user_email}
-      - method: get
+      - httpApi:
+          path: /channels/{workspace_id}/{user_email}
+          method: get
 resources:
   Resources:
 
