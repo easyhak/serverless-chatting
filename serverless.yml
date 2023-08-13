@@ -39,7 +39,7 @@ custom:
       inMemory: true
       seed: true
       migrate: true
-      docker: true
+      # docker: false
 layers:
   pyjwt:
     path: pyjwt
@@ -123,6 +123,12 @@ functions:
       - httpApi:
           path: /workspaces/{user_email}
           method: get
+  inviteToWorkspace:
+    handler: api/workspace/invite_to_workspace.invite_to_workspace
+    events:
+      - httpApi:
+          path: /workspace
+          method: patch
   # channel
   addChannel:
     handler: api/channel/add_channel.add_channel
