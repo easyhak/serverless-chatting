@@ -148,6 +148,12 @@ functions:
       - httpApi:
           path: /channels/{workspace_id}/{user_email}
           method: get
+  inviteToChannel:
+    handler: api/channel/invite_to_channel.invite_to_channel
+    events:
+      - httpApi:
+          path: /channel
+          method: patch
 resources:
   Resources:
 
