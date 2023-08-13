@@ -1,6 +1,6 @@
 import json
-
 import boto3
+import os
 from boto3.dynamodb.conditions import Attr
 from api.user.check_user import check_user
 
@@ -12,8 +12,8 @@ dynamodb = get_dynamodb()
 user_dynamodb = boto3.resource('dynamodb')  # cloud table만 가져옴
 
 def invite_to_workspace(event, context):
-    table = dynamodb.Table("main-table-dev")
-    user_table = user_dynamodb.Table("user-table")
+    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
+    user_table = user_dynamodb.Table(os.environ['USER_TABLE'])
 
     data = json.loads(event['body'])
 
@@ -31,7 +31,7 @@ def invite_to_workspace(event, context):
                 'PK': user_email,
                 'SK': user_email
             },
-            UpdateExpression="SET workspaces = list_append(workspaces, :i)",
+            UpdateExpression=f"SET workspaces = list_append(workspaces, :i)",
             ExpressionAttributeValues={
                 ':i': [workspace_init],
             },
@@ -53,18 +53,26 @@ def invite_to_workspace(event, context):
             'PK': workspace_id,
             'SK': workspace_id
         },
-        UpdateExpression='SET users = list.append(users, :user),'
-                         'updatedAt = :updatedAt',
-        ExpressionAttributeValues={
-            ':user': data['user_email'],
-            ':updatedAt': timestamp
+        UpdateExpression=f"SET #src = list_append(#src, :i)",
+        ExpressionAttributeNames={
+            '#src': 'users',
         },
-        ReturnValues="UPDATE_NEW"
+        ExpressionAttributeValues={
+            ':i': [data['user_email']]
+
+        }
+    )
+
+    res = table.get_item(
+        Key={
+            'PK': workspace_id,
+            'SK': workspace_id
+        }
     )
 
     response = {
         "statusCode": 200,
-        "body": json.dumps(workspace_response['Attributes'],
+        "body": json.dumps(res['Item']['users'],
                            cls=decimalencoder.DecimalEncoder)
     }
 
