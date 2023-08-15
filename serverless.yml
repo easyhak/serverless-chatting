@@ -30,6 +30,12 @@ provider:
 plugins:
   - serverless-dynamodb
   - serverless-offline
+package:
+  exclude:
+    - node_modules/**
+    - .dynamodb/**
+    - .idea/**
+    - venv/**
 custom:
   dynamodb:
     stages:
@@ -47,7 +53,7 @@ layers:
     compatibleRuntimes:
       - python3.10
       - python3.9
-    retain: true # layer versions are not deleted as new ones are created
+    retain: false # layer versions are not deleted as new ones are created
 functions:
 
   # todos example
@@ -169,6 +175,9 @@ functions:
     events:
       - websocket:
           route: $connect
+    layers:
+      - {Ref: PyjwtLambdaLayer}
+
   disconnectHandler:
     handler: websocket/disconnect.disconnect
     events:
@@ -222,4 +231,5 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: main-table-${sls:stage}
+
 

@@ -1,16 +1,22 @@
-import json
 import boto3
-import os
-import random
 import string
-
+from api.jwt.jwt_decoder import decode
 dynamodb = boto3.client('dynamodb')
 
 
 def connect(event, context):
     connectionId = event['requestContext']['connectionId']
-    print(event['requestContext'])
     print(event)
+    print("-------------------headers---------------")
+    print(event['headers'])
+    print("-------------------requestContext---------------")
+    print(event['requestContext'])
+    # id token을 복호화 email, nickname
+    # table 에다가 저장
+    try:
+        print(decode(event['headers']['IDToken'])['email']) # 연결된 id를 반환하도록 함
+    except KeyError:
+        print("no id token")
     '''
     {
     'routeKey': '$connect', 'eventType': 'CONNECT', 
@@ -24,8 +30,5 @@ def connect(event, context):
     # random nickname generator
     _LENGTH = 10
     string_pool = string.ascii_lowercase  # 소문자
-
-
-
 
     return {}
