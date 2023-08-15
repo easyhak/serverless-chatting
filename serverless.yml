@@ -39,7 +39,7 @@ custom:
       inMemory: true
       seed: true
       migrate: true
-      # docker: false
+      docker: true
 layers:
   pyjwt:
     path: pyjwt
@@ -160,6 +160,31 @@ functions:
       - httpApi:
           path: /channel
           method: patch
+
+
+
+  # socket
+  connectHandler:
+    handler: websocket/connect.connect
+    events:
+      - websocket:
+          route: $connect
+  disconnectHandler:
+    handler: websocket/disconnect.disconnect
+    events:
+      - websocket:
+          route: $disconnect
+  dmChatHandler:
+    handler: websocket/dm_chat.dm_chat
+    events:
+      - websocket:
+          route: dmChat
+
+
+#  defaultHandler:
+#    handler: handler.defaultHandler
+#    events:
+#      - websocket: $default
 resources:
   Resources:
 
