@@ -183,6 +183,8 @@ functions:
     events:
       - websocket:
           route: $disconnect
+    layers:
+      - { Ref: PyjwtLambdaLayer }
   dmChatHandler:
     handler: websocket/dm_chat.dm_chat
     events:
