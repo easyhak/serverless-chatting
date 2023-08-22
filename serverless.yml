@@ -190,18 +190,22 @@ functions:
     events:
       - websocket:
           route: dmChat
+  channelChatHandler:
+    handler: websocket/channel_chat.channel_chat
+    events:
+      - websocket:
+          route: channelChat
 
-
-#  defaultHandler:
-#    handler: handler.defaultHandler
-#    events:
-#      - websocket: $default
+  defaultHandler:
+    handler: websocket/default.default
+    events:
+      - websocket:
+          route: $default
 resources:
   Resources:
 
     # table definition
 
-    # todo table
     TodosDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -233,5 +237,3 @@ resources:
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
         TableName: main-table-${sls:stage}
-
-

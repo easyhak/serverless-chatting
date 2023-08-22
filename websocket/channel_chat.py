@@ -4,7 +4,10 @@ import time
 import boto3
 import os
 
+from boto3.dynamodb.conditions import Attr
+
 from api.dynamodb import get_dynamodb
+from api import decimalencoder
 
 dynamodb = get_dynamodb()
 
@@ -18,9 +21,11 @@ dynamodb = get_dynamodb()
 }
 """
 
+dynamodb = get_dynamodb()
+user_dynamodb = boto3.resource('dynamodb')
 
-def dm_chat(event, context):
 
+def channel_chat(event, context):
     timestamp = str(time.time())
 
     data = json.loads(event['body'])
@@ -30,53 +35,75 @@ def dm_chat(event, context):
     sender = data['sender']
 
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
+    user_table = user_dynamodb.Table(os.environ['USER_TABLE'])
+
     item = {
         "sender": sender,
         "message": message,
         "createdAt": timestamp
     }
-    # message update / append / DB에 저장
-    table.update_item(
-        Key={
-            'PK': "workspace#" + data['workspace_id'],
-            'SK': "channel#" + data['channel_id']
-        },
-        UpdateExpression=f"SET #messages = list_append(#messages, :i)",
 
-        ExpressionAttributeValues={
-            ':i': [item]
-        },
-        ExpressionAttributeNames={
-            '#messages': 'messages',
-        },
-        ReturnValues="UPDATED_NEW"
-    )
-    # channel에 속해있는 user를 알아낸다
-    res = table.get_item(
+    response = table.get_item(
         Key={
-            'PK': "workspace#" + data['workspace_id'],
-            'SK': "channel#" + data['channel_id']
+            'PK': "workspace#" + workspace_id,
+            'SK': "channel#" + channel_id
         }
     )
-    channel_users = res['Item']['users']
+    print(response)
+
+    try:
+        print(response['Item'])
+        table.update_item(
+            Key={
+                'PK': "workspace#" + workspace_id,
+                'SK': "channel#" + channel_id
+            },
+            UpdateExpression=f"SET #messages = list_append(#messages, :i)",
+            ExpressionAttributeValues={
+                ':i': [item],
+            },
+            ExpressionAttributeNames={
+                '#messages': 'messages'
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+    except KeyError:
+        return {
+            "statusCode": 200,
+            "body": json.dumps({"message": "not valid workspace or channel"},
+                               cls=decimalencoder.DecimalEncoder)
+        }
+
+    # channel에 속해있는 user를 알아낸다
+    channel_users = response['Item']['users']
+
     print(channel_users)
 
-
-    paginator = dynamodb.get_paginator('scan')
     connectionIds = []
+    user_res = user_table.scan(
+        FilterExpression=Attr('SK').begins_with('connectionId#')
+    )
+    print(user_res['Items'])
+    for x in user_res['Items']:
+        if x['PK'].split('#')[1] in channel_users:
+            connectionIds.append(x['SK'].split('#')[1])
 
     apigatewaymanagementapi = boto3.client(
         'apigatewaymanagementapi',
         endpoint_url="https://" + event["requestContext"]["domainName"] + "/" + event["requestContext"]["stage"]
     )
-
-    for page in paginator.paginate(TableName=os.environ['DYNAMODB_TABLE']):
-        connectionIds.extend(page['Items'])
+    content = {
+        "sender": sender,
+        "channel_id": channel_id,
+        "workspace_id": workspace_id,
+        "message": message,
+        "createdAt": timestamp,
+    }
     print(connectionIds)
     for connectionId in connectionIds:
         apigatewaymanagementapi.post_to_connection(
-            Data=message,
-            ConnectionId=connectionId['connectionId']['S']
+            Data=json.dumps(content, cls=decimalencoder.DecimalEncoder),
+            ConnectionId=connectionId
         )
 
     return {}
