@@ -11,6 +11,7 @@ from api.dynamodb import get_dynamodb
 dynamodb = get_dynamodb()
 user_dynamodb = boto3.resource('dynamodb')  # cloud table만 가져옴
 
+
 def invite_to_workspace(event, context):
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     user_table = user_dynamodb.Table(os.environ['USER_TABLE'])
@@ -24,7 +25,7 @@ def invite_to_workspace(event, context):
     timestamp = str(time.time())
     # table 값 넣기
     # useer table 값 넣기
-    workspace_init = {workspace_id: []}
+    workspace_init = {data['workspace_id']: []}
     if check_user(user_email):
         user_table.update_item(
             Key={

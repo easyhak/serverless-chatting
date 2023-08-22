@@ -55,6 +55,7 @@ def invite_to_channel(event, context):
     )
     ind = -1
     for i, x in enumerate(user_item['Item']['workspaces']):
+        print("===========")
         print(list(x.keys())[0])
         if list(x.keys())[0] == data['workspace_id']:
             ind = i
@@ -94,7 +95,7 @@ def invite_to_channel(event, context):
     )
     response = {
         "statusCode": 200,
-        "body": json.dumps(set(res['Item']['users']),
+        "body": json.dumps(res['Item']['users'],
                            cls=decimalencoder.DecimalEncoder)
     }
     return response
