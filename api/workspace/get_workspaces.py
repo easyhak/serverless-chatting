@@ -14,6 +14,7 @@ user_dynamodb = boto3.resource('dynamodb')  # cloud table만 가져옴
 # /workspaces/{user}
 # user가 속해 있는 workspace list 반환
 def get_workspaces(event, context):
+    table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     user_table = user_dynamodb.Table(os.environ['USER_TABLE'])
 
     user_email = "user#" + event['pathParameters']['user_email']
@@ -37,10 +38,48 @@ def get_workspaces(event, context):
         print(result)
         print(result['workspaces'])
         # response = result['Item']
-        workspaces_list =[]
+        workspaces_list = []
         for x in result['workspaces']:
             workspaces_list.append(list(x.keys())[0])
-        return workspaces_list
+        print("here workspace_list : ", workspaces_list)
+
+        workspace_inform_list = []
+        try:
+            for workspace in workspaces_list:
+                workspace_response = table.get_item(
+                    Key={
+                        'PK': "workspace#" + workspace,
+                        'SK': "workspace#" + workspace
+                    }
+                )
+                workspace_result = workspace_response['Item']
+
+                one_workspace = {
+                    "id": workspace,
+                    "name": workspace_result['workspace_name'],
+                    "cnt": len(workspace_result['users'])
+                }
+                workspace_inform_list.append(one_workspace)
+                print(one_workspace)
+
+            response = {
+                "statusCode": 200,
+                "body": json.dumps(workspace_inform_list,
+                                   cls=decimalencoder.DecimalEncoder)
+            }
+
+            return response
+
+        # invalid workspace
+        except:
+            response = {
+                "statusCode": 200,
+                "body": json.dumps({
+                    "message": "invalid workspace"
+                }, cls=decimalencoder.DecimalEncoder)
+            }
+            return response
+
     # invalid user
     except:
         response = {
