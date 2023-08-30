@@ -167,7 +167,13 @@ functions:
           path: /channel
           method: patch
 
-
+  # message
+  getChannelMessages:
+    handler: api/message/get_channel_messages.get_channel_messages
+    events:
+      - httpApi:
+          path: /messages/{workspace_id}/{user_email}
+          method: get
 
   # socket
   connectHandler:
