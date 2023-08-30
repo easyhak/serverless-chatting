@@ -168,11 +168,19 @@ functions:
           method: patch
 
   # message
+
   getChannelMessages:
     handler: api/message/get_channel_messages.get_channel_messages
     events:
       - httpApi:
           path: /messages/{workspace_id}/{user_email}
+          method: get
+
+  getDmMessages:
+    handler: api/message/get_dm_messages.get_dm_messages
+    events:
+      - httpApi:
+          path: /messages/{sender}/{receiver}
           method: get
 
   # socket
