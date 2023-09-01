@@ -98,7 +98,7 @@ def out_workspace(event, context):
     # create a response
     response = {
         "statusCode": 200,
-        "body": json.dumps({"message": "workspace out complete"},
+        "body": json.dumps({"message":  "workspace out complete"},
                            cls=decimalencoder.DecimalEncoder)
     }
 
