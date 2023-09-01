@@ -173,14 +173,14 @@ functions:
     handler: api/message/get_channel_messages.get_channel_messages
     events:
       - httpApi:
-          path: /messages/{workspace_id}/{user_email}
+          path: /messages/{workspace_id}/{channel_id}
           method: get
 
   getDmMessages:
     handler: api/message/get_dm_messages.get_dm_messages
     events:
       - httpApi:
-          path: /messages/{sender}/{receiver}
+          path: /dm/{sender}/{receiver}
           method: get
 
   # socket
@@ -220,34 +220,34 @@ resources:
 
     # table definition
 
-    TodosDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: id
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: id
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: todo-table-${sls:stage}
-    # PK SK table
-    DynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: PK
-            AttributeType: S
-          - AttributeName: SK
-            AttributeType: S
-        KeySchema:
-          - AttributeName: PK
-            KeyType: HASH
-          - AttributeName: SK
-            KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST
-        TableName: main-table-${sls:stage}
+#    TodosDynamoDbTable:
+#      Type: 'AWS::DynamoDB::Table'
+#      DeletionPolicy: Retain
+#      Properties:
+#        AttributeDefinitions:
+#          -
+#            AttributeName: id
+#            AttributeType: S
+#        KeySchema:
+#          -
+#            AttributeName: id
+#            KeyType: HASH
+#        BillingMode: PAY_PER_REQUEST
+#        TableName: todo-table-${sls:stage}
+#    # PK SK table
+#    DynamoDbTable:
+#      Type: 'AWS::DynamoDB::Table'
+#      DeletionPolicy: Retain
+#      Properties:
+#        AttributeDefinitions:
+#          - AttributeName: PK
+#            AttributeType: S
+#          - AttributeName: SK
+#            AttributeType: S
+#        KeySchema:
+#          - AttributeName: PK
+#            KeyType: HASH
+#          - AttributeName: SK
+#            KeyType: RANGE
+#        BillingMode: PAY_PER_REQUEST
+#        TableName: main-table-${sls:stage}

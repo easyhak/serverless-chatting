@@ -18,18 +18,30 @@ def get_channel_messages(event, context):
 
     workspace_id = 'workspace#' + event['pathParameters']['workspace_id']
     channel_id = 'channel#' + event['pathParameters']['channel_id']
+    print("workspace_id: " + workspace_id)
+    print("channel_id:" + channel_id)
     channel_info = table.get_item(
         Key={
             'PK': workspace_id,
-            'SK': workspace_id
+            'SK': channel_id
         }
     )
     # 권한이 있는 유저인지 확인
     # workspace id나 channel id가 존재하지 않을 때
-
-    response = {
-        "statusCode": 200,
-        "body": json.dumps(channel_info['Item']['messages'],
-                           cls=decimalencoder.DecimalEncoder)
-    }
-    return response
+    print(channel_info)
+    try:
+        response = {
+            "statusCode": 200,
+            "body": json.dumps(channel_info['Item']['messages'],
+                               cls=decimalencoder.DecimalEncoder)
+        }
+        return response
+    except Exception:
+        response = {
+            "statusCode": 200,
+            "body": json.dumps({
+                "message": "invalid workspace id or channel id"
+            },
+                cls=decimalencoder.DecimalEncoder)
+        }
+        return response

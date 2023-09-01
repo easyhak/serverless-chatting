@@ -15,8 +15,8 @@ def get_dm_messages(event, context):
     # table
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
 
-    sender = 'workspace#' + event['pathParameters']['sender']
-    receiver = 'channel#' + event['pathParameters']['receiver']
+    sender = event['pathParameters']['sender']
+    receiver = event['pathParameters']['receiver']
 
     # user 권한 확인
 
@@ -26,7 +26,9 @@ def get_dm_messages(event, context):
                 'PK': sender+"#"+receiver,
                 'SK': sender+"#"+receiver
             }
+
         )
+        print(dm[''])
     # user끼리 대화한 내용이 없으면 빈 리스트 반환
     except:
         response = {
