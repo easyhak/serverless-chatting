@@ -135,6 +135,12 @@ functions:
       - httpApi:
           path: /workspace
           method: patch
+  outWorkspace:
+    handler: api/workspace/out_workspace.out_workspace
+    events:
+      - httpApi:
+          path: /workspace/out
+          method: patch
   # channel
   addChannel:
     handler: api/channel/add_channel.add_channel
@@ -165,6 +171,12 @@ functions:
     events:
       - httpApi:
           path: /channel
+          method: patch
+  outChannel:
+    handler: api/channel/out_channel.out_channel
+    events:
+      - httpApi:
+          path: /channel/out
           method: patch
 
   # message
