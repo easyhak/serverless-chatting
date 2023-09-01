@@ -92,7 +92,7 @@ def out_channel(event, context):
     # create a response
     response = {
         "statusCode": 200,
-        "body": json.dumps({"message": "channel out complete"},
+        "body": json.dumps({"message":  "channel out complete"},
                            cls=decimalencoder.DecimalEncoder)
     }
 
