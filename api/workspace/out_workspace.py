@@ -31,74 +31,76 @@ def out_workspace(event, context):
         }
     )
 
-    # channel에 대한 정보 가져옴
-    channel_response = table.query(
-        KeyConditionExpression='PK =:workspace_name and begins_with(SK, :SK)',
+    all_channel_response = table.query(
+        KeyConditionExpression='PK = :workspace_name AND begins_with(SK, :SK)',
         ExpressionAttributeValues={
             ':workspace_name': workspace_id,
             ':SK': "channel#"
         }
     )
+    print(all_channel_response)
 
-    for i in channel_response['Items']:
-        print(i)
-        table.update_item(
-            Key={
-                'PK': workspace_id,
-                'SK': i['SK']
-            },
-            UpdateExpression="REMOVE #users :i",
+    idx = -1
+    for channel_response in all_channel_response['Items']:
+        idx += 1
+        if data['user_email'] in channel_response['users']:
+            channel_result = table.update_item(
+                Key={
+                    'PK': workspace_id,
+                    'SK': channel_response['SK']
+                },
+                UpdateExpression=f"REMOVE #src[{idx}]",
 
-            ExpressionAttributeValues={
-                ':i': [data['user_email']]
-            },
-            ExpressionAttributeNames={
-                '#users': 'users',
-            }
-        )
+                ExpressionAttributeNames={
+                    '#src': 'users'
+                }
+            )
+            print(channel_result)
+
+    workspace_users = workspace_item['Item']['users']
+    idx = -1
+    for workspace_user in workspace_users:
+        idx += 1
+        if workspace_user == data['user_email']:
+            break  # workspace의 users[idx]가 해당 유저
 
     workspace_response = table.update_item(
         Key={
             'PK': workspace_id,
             'SK': workspace_id
         },
-        UpdateExpression="REMOVE #users :i",
+        UpdateExpression=f"REMOVE #src[{idx}]",
 
-        ExpressionAttributeValues={
-            ':i': [data['user_email']]
-        },
         ExpressionAttributeNames={
-            '#users': 'users',
+            '#src': 'users'
+
         }
     )
 
-    filter_condition = Attr(data['workspace_id']).exists()
-    if check_user("user#" + data['user_email']):
-        user_table.update_item(
-            Key={
-                'PK': user_email,
-                'SK': user_email
-            },
-            UpdateExpression="REMOVE workspaces.#workspace_id",
-            ExpressionAttributeNames={
-                '#workspace_id': data['workspace_id']
-            },
-            ConditionExpression=filter_condition
-        )
-
-    else:
-        return {
-            "statusCode": 200,
-            "body": json.dumps({
-                "message": "invalid user"
-            },
-                cls=decimalencoder.DecimalEncoder)
+    user_item = user_table.get_item(
+        Key={
+            'PK': user_email,
+            'SK': user_email
         }
+    )
+
+    user_workspace = user_item['Item']['workspaces']
+    new_workspaces = [workspace for workspace in user_workspace if data['workspace_id'] not in workspace]
+    user_table.update_item(
+        Key={
+            'PK': user_email,
+            'SK': user_email
+        },
+        UpdateExpression="SET workspaces = :new_workspaces",
+        ExpressionAttributeValues={
+            ':new_workspaces': new_workspaces
+        }
+    )
 
     # create a response
     response = {
         "statusCode": 200,
-        "body": json.dumps({"message":  "workspace out complete"},
+        "body": json.dumps({"message": "workspace out complete"},
                            cls=decimalencoder.DecimalEncoder)
     }
 
