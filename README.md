@@ -1,28 +1,38 @@
-<!--
-title: 'AWS Serverless HTTP API with DynamoDB store example in Python'
-description: 'This example demonstrates how to setup an HTTP API allowing you to create, list, get, update and delete Todos. DynamoDB is used to store the data.'
-layout: Doc
-framework: v1
-platform: AWS
-language: Python
-authorLink: 'https://github.com/godfreyhobbs'
-authorName: 'Godfrey Hobbs'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/8434141?v=4&s=140'
--->
-# Serverless HTTP API
+# Slack Clone Coding By Using Serverless Stack
+It is a slack clone application made using aws serverless stack.   
+This repository contains only the backend technology.   
+If you want to go frontend code go to this <a href="#">repository</a>
 
-This example demonstrates how to setup an HTTP API allowing you to create, list, get, update and delete Todos. DynamoDB is used to store the data. This is just an example and of course you could use any data storage as a backend.
+## Stack 
+- Python3
+- Serverless Framework
+- AWS Lambda, AWS ApiGateway
+- AWS Cognito User Pool
+- AWS DynamoDB
 
-## Structure
+## Prerequisites
+1. Need to create an aws account
+2. Install Serverless Framework
+    ```sh
+    npm install -g serverless
+    ```
+3. Install AWS Cli and Configure your CLI user   
+   - <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html">Install AWS CLI</a>
+   - <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html">Configure the AWS CLI</a>
+4. Setting AWS Cognito User Pool
+    - in this application case we set Post confirmation Lambda trigger
+    - this lambda code is in <a href="#">Here<a/>
+    - you need to manually set the content for this code
 
-This service has a separate directory for all the todo operations. For each operation exactly one file exists e.g. `todos/delete.py`. In each of these files there is exactly one function defined.
-
-The idea behind the `todos` directory is that in case you want to create a service containing multiple resources e.g. users, notes, comments you could do so in the same service. While this is certainly possible you might consider creating a separate service for each resource. It depends on the use-case and your preference.
-
-## Use-cases
-
-- API for a Web Application
-- API for a Mobile Application
+## Deploy
+you can simply deploy enter this command 
+```shell
+serverless deploy
+```
+If you want to remove application 
+```shell
+serverless remove
+```
 
 ## Setup
 
@@ -40,89 +50,142 @@ serverless deploy
 
 The expected result should be similar to:
 
-```bash
-Serverless: Packaging service…
-Serverless: Uploading CloudFormation file to S3…
-Serverless: Uploading service .zip file to S3…
-Serverless: Updating Stack…
-Serverless: Checking Stack update progress…
-Serverless: Stack update finished…
+```shell
+Running "serverless" from node_modules
 
-Service Information
-service: serverless-http-api-dynamodb
-stage: dev
-region: us-east-1
-api keys:
-  None
+Deploying slack-backend to stage dev (ap-northeast-2)
+
+✔ Service deployed to stack slack-backend (125s)
+
 endpoints:
-  POST - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/todos
-  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/todos
-  GET - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/todos/{id}
-  PUT - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/todos/{id}
-  DELETE - https://45wf34z5yf.execute-api.us-east-1.amazonaws.com/todos/{id}
+  POST - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/user
+  POST - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/workspace
+  DELETE - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/workspace/{workspace_id}
+  GET - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/workspace/{workspace_id}
+  GET - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/workspaces/{user_email}
+  PATCH - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/workspace
+  PATCH - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/workspace/out
+  POST - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/channel
+  DELETE - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/channel/{workspace_id}/{channel_id}
+  GET - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/channel/{workspace_id}/{channel_id}
+  GET - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/channels/{workspace_id}/{user_email}
+  PATCH - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/channel
+  PATCH - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/channel/out
+  GET - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/messages/{workspace_id}/{channel_id}
+  GET - https://xxxxxxx.execute-api.ap-northeast-2.amazonaws.com/dm/{sender}/{receiver}
+  wss://xxxxxx.execute-api.ap-northeast-2.amazonaws.com/{stage}
 functions:
-  update: serverless-http-api-dynamodb-dev-update
-  get: serverless-http-api-dynamodb-dev-get
-  list: serverless-http-api-dynamodb-dev-list
-  create: serverless-http-api-dynamodb-dev-create
-  delete: serverless-http-api-dynamodb-dev-delete
+  addUser: slack-backend-addUser (138 kB)
+  addWorkspace: slack-backend-addWorkspace (138 kB)
+  deleteWorkspace: slack-backend-deleteWorkspace (138 kB)
+  getWorkspace: slack-backend-getWorkspace (138 kB)
+  getWorkspaces: slack-backend-getWorkspaces (138 kB)
+  inviteToWorkspace: slack-backend-inviteToWorkspace (138 kB)
+  outWorkspace: slack-backend-outWorkspace (138 kB)
+  defaultHandler: slack-backend-defaultHandler (138 kB)
+layers:
+  pyjwt: arn:aws:lambda:ap-northeast-2:xxxxxxxxx:layer:pyjwt:22
 ```
 
-## Usage
+# HttpApi Specification
 
-You can create, retrieve, update, or delete todos with the following commands:
+## Workspace
 
-### Create a Todo
-
-```bash
-curl -X POST https://XXXXXXX.execute-api.us-east-1.amazonaws.com/todos --data '{ "text": "Learn Serverless" }' -H "Content-Type: application/json"
-```
-
-No output
-
-### List all Todos
+### Create a Workspace
 
 ```bash
-curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/todos
+curl -X POST https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace --data '{ "text": "Learn Serverless" }' -H "Content-Type: application/json"
 ```
 
 Example output:
 ```bash
-[{"text":"Deploy my first service","id":"ac90feaa11e6-9ede-afdfa051af86","checked":true,"updatedAt":1479139961304},{"text":"Learn Serverless","id":"206793aa11e6-9ede-afdfa051af86","createdAt":1479139943241,"checked":false,"updatedAt":1479139943241}]%
+```
+### Make a workspace
+```shell
+curl -X DELETE https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace/{workspace_id}
 ```
 
-### Get one Todo
+Example output:
+```bash
+```
+
+### Delete a Workspace
 
 ```bash
-# Replace the <id> part with a real id from your todos table
-curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/todos/<id>
+curl -X DELETE https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace/{workspace_id}
+```
+
+Example output:
+```bash
+```
+
+### Get Workspace Info
+
+```bash
+curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace/{workspace_id}
 ```
 
 Example Result:
 ```bash
-{"text":"Learn Serverless","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":false,"updatedAt":1479138570824}%
 ```
 
-### Update a Todo
+### Get Workspace information to which the User belongs
 
 ```bash
-# Replace the <id> part with a real id from your todos table
-curl -X PUT https://XXXXXXX.execute-api.us-east-1.amazonaws.com/todos/<id> --data '{ "text": "Learn Serverless", "checked": true }' -H "Content-Type: application/json"
+curl -X GET https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspaces/{user_email}"
 ```
 
 Example Result:
 ```bash
-{"text":"Learn Serverless","id":"ee6490d0-aa11e6-9ede-afdfa051af86","createdAt":1479138570824,"checked":true,"updatedAt":1479138570824}%
 ```
 
-### Delete a Todo
+### Invite to Workspace
 
 ```bash
-# Replace the <id> part with a real id from your todos table
-curl -X DELETE https://XXXXXXX.execute-api.us-east-1.amazonaws.com/todos/<id>
+curl -X PATCH https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace
 ```
 
-No output
+Example Result:
+```bash
+```
+
+### Out Workspace
+
+```bash
+curl -X PATCH https://XXXXXXX.execute-api.us-east-1.amazonaws.com//workspace/out
+```
+
+Example Result:
+```bash
+```
+
+## Channel
+
+### Make a Channel
+### Delete a Channel
+### Get a Channel
+### Get Channels
+### Invite To Workspace
+### Out Channel
+
+## Message
+
+### Get Channel Messages
+### Get Dm Messages
+
+
+# WebSocket Specification
+
+### Connect
+```bash
+wscat -c wss://xxxxxx.execute-api.ap-northeast-2.amazonaws.com/{stage} -H Authorization:{access_token}
+```
+
+### Disconnect
+
+### DM Chatting
+{"action": "dm_chat"}
+### Channel Chatting
 
 ## Scaling
 
