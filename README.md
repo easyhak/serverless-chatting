@@ -24,16 +24,6 @@ If you want to go frontend code go to this <a href="#">repository</a>
     - this lambda code is in <a href="#">Here<a/>
     - you need to manually set the content for this code
 
-## Deploy
-you can simply deploy enter this command 
-```shell
-serverless deploy
-```
-If you want to remove application 
-```shell
-serverless remove
-```
-
 ## Setup
 
 ```bash
@@ -42,7 +32,7 @@ npm install -g serverless
 
 ## Deploy
 
-In order to deploy the endpoint simply run
+you can simply deploy enter this command 
 
 ```bash
 serverless deploy
@@ -87,6 +77,11 @@ layers:
   pyjwt: arn:aws:lambda:ap-northeast-2:xxxxxxxxx:layer:pyjwt:22
 ```
 
+If you want to remove application 
+```shell
+serverless remove
+```
+
 # HttpApi Specification
 
 ## Workspace
@@ -94,7 +89,7 @@ layers:
 ### Create a Workspace
 
 ```bash
-curl -X POST https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace --data '{ "text": "Learn Serverless" }' -H "Content-Type: application/json"
+curl -X POST https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace -H "Content-Type: application/json"
 ```
 
 Example output:
