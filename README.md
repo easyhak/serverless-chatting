@@ -89,85 +89,237 @@ serverless remove
 ### Create a Workspace
 
 ```bash
-curl -X POST https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace -H "Content-Type: application/json"
+curl -X POST https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/workspace -d '{"workspace_id": "7ea53ab4-7786-4ea5-9e88-79aba53d16f4","channel_name": "test channel","user_email": "test@test.com"}' -H "Content-Type: application/json"
 ```
 
 Example output:
 ```bash
-```
-### Make a workspace
-```shell
-curl -X DELETE https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace/{workspace_id}
-```
-
-Example output:
-```bash
+{
+    "message": "channel created successfully",
+    "workspace_name": "testing workspace",
+    "workspace_id": "7ea53ab4-7786-4ea5-9e88-79aba53d16f4",
+    "channel_id": "ca4028cb-0714-4c52-a45d-cf72f484afe5",
+    "type": "channel",
+    "users": [
+        "test@test.com"
+    ],
+    "messages": [],
+    "createdAt": "1691337253.0484533",
+    "updatedAt": "1691337253.0484533"
+}
 ```
 
 ### Delete a Workspace
 
 ```bash
-curl -X DELETE https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace/{workspace_id}
+curl -X DELETE https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/workspace/{workspace_id}
 ```
 
 Example output:
 ```bash
+{"message": {workspace_id} + " delete complete"}
 ```
 
 ### Get Workspace Info
 
 ```bash
-curl https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace/{workspace_id}
+curl https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/workspace/{workspace_id}
 ```
 
 Example Result:
 ```bash
+{
+    "createdAt": "1691426371.0651886",
+    "channels": [],
+    "SK": "workspace#0e204a25-e8f6-4777-8e81-b1796b50ad9b",
+    "admin": "tt13@tesst.com",
+    "PK": "workspace#0e204a25-e8f6-4777-8e81-b1796b50ad9b",
+    "type": "workspace",
+    "workspace_name": "testing1",
+    "users": [
+        "tt13@tesst.com"
+    ],
+    "updatedAt": "1691426371.0651886",
+    "workspace_id": "0e204a25-e8f6-4777-8e81-b1796b50ad9b"
+}
 ```
 
-### Get Workspace information to which the User belongs
+### Get Workspaces information to which the User belongs
 
 ```bash
-curl -X GET https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspaces/{user_email}"
+curl -X GET https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/workspaces/{user_email}"
 ```
 
 Example Result:
 ```bash
+[
+	{
+		"id": "bef16dd1-9e67-4ac2-954d-fa55bfd87329", 
+		"name": "Test",
+		"cnt": 1
+	}, 
+  {
+		"id": "c62b5944-2362-4336-83c0-6a7886eee496", 
+		"name": "2", 
+		"cnt": 1
+	}
+]
 ```
 
 ### Invite to Workspace
 
 ```bash
-curl -X PATCH https://XXXXXXX.execute-api.us-east-1.amazonaws.com/workspace
+curl -X PATCH https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/workspace -d '{"workspace_id" : "testing", "user_email": "test123@test.com"}'
 ```
 
 Example Result:
 ```bash
+[
+    "test@gmail.com",
+    "test2@naver.com"
+]
 ```
 
 ### Out Workspace
 
 ```bash
-curl -X PATCH https://XXXXXXX.execute-api.us-east-1.amazonaws.com//workspace/out
+curl -X PATCH https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/workspace/out -d '{"workspace_id": "testing","user_email": "test123@test.com"}'
 ```
 
 Example Result:
 ```bash
+{"message": "workspace out complete"}
 ```
 
 ## Channel
 
 ### Make a Channel
-### Delete a Channel
-### Get a Channel
-### Get Channels
-### Invite To Workspace
-### Out Channel
+```bash
+curl -X POST https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/channel -d '{"workspace_id": "7ea53ab4-7786-4ea5-9e88-79aba53d16f4","channel_name": "test channel","user_email": "test@test.com"}'
+```
 
+Example Result:
+```bash
+{
+    "message": "channel created successfully",
+    "workspace_name": "testing workspace",
+    "workspace_id": "7ea53ab4-7786-4ea5-9e88-79aba53d16f4",
+    "channel_id": "ca4028cb-0714-4c52-a45d-cf72f484afe5",
+    "type": "channel",
+    "users": [
+        "test@test.com"
+    ],
+    "messages": [],
+    "createdAt": "1691337253.0484533",
+    "updatedAt": "1691337253.0484533"
+}
+```
+### Delete a Channel
+```shell
+curl -X DELETE https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/channel/{workspace_id}/{channel_id} 
+```
+
+Example Result:
+```bash
+{
+    "message": {channel_id} + " delete complete"
+}
+```
+### Get a Channel
+```shell
+curl -X GET https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/channel/{workspace_id}/{channel_id} 
+```
+
+Example Result:
+```bash
+{
+    "channel_name": "test channel1",
+    "workspace_id": "689b2153-19b4-482e-9391-a42f8c1157ce",
+    "createdAt": "1691476292.5418136",
+    "SK": "channel#5ea91590-ff16-4a95-98c6-2a03b8f5bad1",
+    "messages": [],
+    "PK": "workspace#689b2153-19b4-482e-9391-a42f8c1157ce",
+    "type": "channel",
+    "workspace_name": "testing3",
+    "users": [
+        "tt13@tesst.com"
+    ],
+    "updatedAt": "1691476292.5418136",
+    "channel_id": "5ea91590-ff16-4a95-98c6-2a03b8f5bad1"
+}
+```
+### Get Channels
+
+```shell
+curl -X DELETE https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/channels/{workspace_id}/{user_email}
+```
+
+Example Result:
+```bash
+[channel1, channel2, channel3]
+```
+
+### Invite To Channel
+
+```shell
+curl -X PATCH https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/channel -d '{"workspace_id": "19e7dda1-2f82-43d7-9edf-ed69ae21ddff","channel_id": "dc619060-294a-4dea-9d18-a606aa95ef15","user_email": "test2@naver.com"}'
+```
+
+Example Result:
+```bash
+["test@gmail.com","test2@naver.com"]
+```
+
+### Out Channel
+```shell
+curl -X PATCH https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/channel/out -d '{"workspace_id": "testing","channel_id": "tesing_channel","user_email": "test123@test.com"'
+```
+
+Example Result:
+```bash
+{"message": "channel out complete"}
+```
 ## Message
 
 ### Get Channel Messages
-### Get Dm Messages
+```shell
+curl -X GET https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/messages/{workspace_id}/{channel_id}
+```
 
+Example Result:
+```bash
+[
+   {
+      "message":"hi hi",
+      "sender":"jooin2000@naver.com",
+      "createdAt":"1692724276.0693274"
+   },
+   {
+      "message":"haa",
+      "sender":"jooin2000@naver.com",
+      "createdAt":"1692724417.0381713"
+   },
+   {
+      "message":"hi hi",
+      "sender":"jooin2000@naver.com",
+      "createdAt":"1692724562.023181"
+   },
+   {
+      "message":"hi hi",
+      "sender":"jooin2000@naver.com",
+      "createdAt":"1692725001.527151"
+   }
+]
+```
+### Get Dm Messages
+```shell
+curl -X PATCH https://XXXXXXX.execute-api.ap-northeast-2.amazonaws.com/dm/{sender}/{receiver}
+```
+
+Example Result:
+```bash
+[{"createdAt": 1692441630571, "receiver": "test@gmail.com", "message": "hello !!", "sender": "test2@naver.com"}
+```
 
 # WebSocket Specification
 
@@ -179,8 +331,28 @@ wscat -c wss://xxxxxx.execute-api.ap-northeast-2.amazonaws.com/{stage} -H Author
 ### Disconnect
 
 ### DM Chatting
-{"action": "dm_chat"}
+```json
+   {
+	"action": "dm_chat",
+	"sender": "user1",
+	"receiver": "user2",
+    "message": "Hello!!",
+	"createdAt": "1692441630571"
+}
+```
+
 ### Channel Chatting
+
+```json
+{
+   "action":"channelChat",
+   "message":"hi hi",
+   "sender":"jooin2000@naver.com",
+   "channel_id":"0f582c82-1bbb-4867-811a-b9d4d1f7b1ef",
+   "workspace_id":"a3686811-2fe1-4dc1-b935-11892e3e04f3"
+}
+```
+
 
 ## Scaling
 
