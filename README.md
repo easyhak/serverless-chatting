@@ -6,7 +6,7 @@ If you want to go frontend code go to this <a href="#">repository</a>
 ## Stack 
 - Python3
 - Serverless Framework
-- AWS Lambda, AWS ApiGateway
+- AWS Lambda, AWS ApiGateway(websocket, httpapi)
 - AWS Cognito User Pool
 - AWS DynamoDB
 
@@ -23,12 +23,6 @@ If you want to go frontend code go to this <a href="#">repository</a>
     - in this application case we set Post confirmation Lambda trigger
     - this lambda code is in <a href="#">Here<a/>
     - you need to manually set the content for this code
-
-## Setup
-
-```bash
-npm install -g serverless
-```
 
 ## Deploy
 
@@ -332,12 +326,12 @@ wscat -c wss://xxxxxx.execute-api.ap-northeast-2.amazonaws.com/{stage} -H Author
 
 ### DM Chatting
 ```json
-   {
-	"action": "dm_chat",
-	"sender": "user1",
-	"receiver": "user2",
-    "message": "Hello!!",
-	"createdAt": "1692441630571"
+{
+"action": "dm_chat",
+"sender": "user1",
+"receiver": "user2",
+"message": "Hello!!",
+"createdAt": "1692441630571"
 }
 ```
 
@@ -367,9 +361,9 @@ When you create a table, you specify how much provisioned throughput capacity yo
 This is can be done via settings in the `serverless.yml`.
 
 ```yaml
-  ProvisionedThroughput:
-    ReadCapacityUnits: 1
-    WriteCapacityUnits: 1
+ProvisionedThroughput:
+ReadCapacityUnits: 1
+WriteCapacityUnits: 1
 ```
 
 In case you expect a lot of traffic fluctuation we recommend to checkout this guide on how to auto scale DynamoDB [https://aws.amazon.com/blogs/aws/auto-scale-dynamodb-with-dynamic-dynamodb/](https://aws.amazon.com/blogs/aws/auto-scale-dynamodb-with-dynamic-dynamodb/)
