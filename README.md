@@ -1,7 +1,7 @@
 # Simple Chatting API Coding By Using Serverless Stack
 It is a slack clone application made using aws serverless stack.   
 This repository contains only the backend technology.   
-If you want to go frontend code go to this <a href="#">repository</a>
+The Authentication part is not implemented.
 
 ## Stack 
 - Python3
